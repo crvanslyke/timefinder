@@ -13,6 +13,7 @@ export default function CreatePoll() {
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [duration, setDuration] = useState<30 | 60>(60); // Default to 60 minutes
   const [timeSlots, setTimeSlots] = useState<{ date: string; time: string }[]>([
     { date: "", time: "" },
   ]);
@@ -70,6 +71,7 @@ export default function CreatePoll() {
         body: JSON.stringify({
           title: title.trim(),
           description: description.trim() || undefined,
+          duration,
           timeSlots: formattedSlots,
         }),
       });
@@ -147,6 +149,36 @@ export default function CreatePoll() {
               rows={3}
               className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
             />
+          </div>
+
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Meeting Duration *
+            </label>
+            <div className="flex gap-4">
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="radio"
+                  name="duration"
+                  value="30"
+                  checked={duration === 30}
+                  onChange={() => setDuration(30)}
+                  className="w-4 h-4 text-indigo-600 focus:ring-indigo-500"
+                />
+                <span className="ml-2 text-gray-700 dark:text-gray-300">30 minutes</span>
+              </label>
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="radio"
+                  name="duration"
+                  value="60"
+                  checked={duration === 60}
+                  onChange={() => setDuration(60)}
+                  className="w-4 h-4 text-indigo-600 focus:ring-indigo-500"
+                />
+                <span className="ml-2 text-gray-700 dark:text-gray-300">1 hour</span>
+              </label>
+            </div>
           </div>
 
           <div className="mb-6">

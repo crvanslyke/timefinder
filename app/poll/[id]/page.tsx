@@ -225,6 +225,7 @@ export default function PollPage() {
             <div className="space-y-2">
               {poll?.timeSlots.map((slot) => {
                 const localTime = dayjs.utc(slot.dateTime).tz(userTimezone);
+                const endTime = localTime.add(poll.duration || 60, 'minute');
                 const isSelected = selectedSlots.has(slot.id);
 
                 return (
@@ -244,7 +245,7 @@ export default function PollPage() {
                           {localTime.format("dddd, MMMM D, YYYY")}
                         </div>
                         <div className="text-gray-600 dark:text-gray-300">
-                          {localTime.format("h:mm A")}
+                          {localTime.format("h:mm A")} - {endTime.format("h:mm A")}
                         </div>
                       </div>
                       <div

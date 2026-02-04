@@ -201,13 +201,14 @@ export default function ResultsPage() {
                 <div className="space-y-2">
                   {bestSlots.map((result) => {
                     const localTime = dayjs.utc(result.slot.dateTime).tz(userTimezone);
+                    const endTime = localTime.add(poll.duration || 60, 'minute');
                     return (
                       <div
                         key={result.slot.id}
                         className="bg-white dark:bg-gray-800 p-4 rounded-lg"
                       >
                         <div className="font-semibold text-gray-900 dark:text-white">
-                          {localTime.format("dddd, MMMM D, YYYY")} at {localTime.format("h:mm A")}
+                          {localTime.format("dddd, MMMM D, YYYY")} at {localTime.format("h:mm A")} - {endTime.format("h:mm A")}
                         </div>
                         <div className="text-sm text-gray-600 dark:text-gray-400">
                           {result.availableParticipants.join(", ")}
@@ -230,6 +231,7 @@ export default function ResultsPage() {
               <div className="space-y-4">
                 {results.map((result) => {
                   const localTime = dayjs.utc(result.slot.dateTime).tz(userTimezone);
+                  const endTime = localTime.add(poll.duration || 60, 'minute');
                   const isBest = bestSlots.some((b) => b.slot.id === result.slot.id);
 
                   return (
@@ -247,7 +249,7 @@ export default function ResultsPage() {
                             {localTime.format("dddd, MMMM D, YYYY")}
                           </div>
                           <div className="text-gray-600 dark:text-gray-300">
-                            {localTime.format("h:mm A")}
+                            {localTime.format("h:mm A")} - {endTime.format("h:mm A")}
                           </div>
                         </div>
                         <div className="text-right">

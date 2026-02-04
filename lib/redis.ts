@@ -27,6 +27,7 @@ export interface Poll {
   id: string;
   title: string;
   description?: string;
+  duration: 30 | 60; // Duration in minutes (30 or 60)
   timeSlots: TimeSlot[];
   participants: Participant[];
   createdAt: string;
