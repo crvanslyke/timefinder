@@ -65,6 +65,18 @@ export default function PollPage() {
     fetchPoll();
   }, [fetchPoll]);
 
+  // Check if user has already voted and pre-fill their selections
+  useEffect(() => {
+    if (poll && name.trim()) {
+      const existingParticipant = poll.participants.find(
+        p => p.name.toLowerCase() === name.trim().toLowerCase()
+      );
+      if (existingParticipant) {
+        setSelectedSlots(new Set(existingParticipant.selectedSlots));
+      }
+    }
+  }, [name, poll]);
+
   const toggleSlot = (slotId: string) => {
     const newSelected = new Set(selectedSlots);
     if (newSelected.has(slotId)) {
@@ -179,6 +191,14 @@ export default function PollPage() {
             </div>
           )}
 
+          {poll && poll.participants.length > 0 && (
+            <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg text-blue-800 dark:text-blue-200">
+              <p className="text-sm">
+                <strong>Want to change your vote?</strong> Enter your name exactly as you did before to update your availability.
+              </p>
+            </div>
+          )}
+
           <div className="mb-6">
             <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Your Name *
@@ -260,8 +280,18 @@ export default function PollPage() {
             disabled={isSubmitting}
             className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
           >
-            {isSubmitting ? "Submitting..." : "Submit Availability"}
+            {isSubmitting
+              ? "Submitting..."
+              : poll?.participants.some(p => p.name.toLowerCase() === name.trim().toLowerCase())
+                ? "Update Availability"
+                : "Submit Availability"}
           </button>
+
+          {poll && poll.participants.some(p => p.name.toLowerCase() === name.trim().toLowerCase()) && (
+            <p className="mt-2 text-sm text-blue-600 dark:text-blue-400 text-center">
+              ℹ️ You&apos;ve already voted. Your response will be updated.
+            </p>
+          )}
         </form>
 
         {poll && poll.participants.length > 0 && (
