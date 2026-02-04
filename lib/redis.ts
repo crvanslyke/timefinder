@@ -1,15 +1,21 @@
 import { Redis } from "@upstash/redis";
 
-if (!process.env.KV_REST_API_URL || !process.env.KV_REST_API_TOKEN) {
-  throw new Error(
-    "KV_REST_API_URL and KV_REST_API_TOKEN must be defined in environment variables"
-  );
-}
+let redisInstance: Redis | null = null;
 
-export const redis = new Redis({
-  url: process.env.KV_REST_API_URL,
-  token: process.env.KV_REST_API_TOKEN,
-});
+function getRedis(): Redis {
+  if (!redisInstance) {
+    if (!process.env.KV_REST_API_URL || !process.env.KV_REST_API_TOKEN) {
+      throw new Error(
+        "KV_REST_API_URL and KV_REST_API_TOKEN must be defined in environment variables"
+      );
+    }
+    redisInstance = new Redis({
+      url: process.env.KV_REST_API_URL,
+      token: process.env.KV_REST_API_TOKEN,
+    });
+  }
+  return redisInstance;
+}
 
 // Types
 export interface TimeSlot {
@@ -49,13 +55,13 @@ export async function createPoll(poll: Omit<Poll, "id" | "createdAt" | "expiresA
   };
 
   // Store with TTL of 14 days (in seconds)
-  await redis.setex(`poll:${id}`, 14 * 24 * 60 * 60, newPoll);
+  await getRedis().setex(`poll:${id}`, 14 * 24 * 60 * 60, newPoll);
 
   return newPoll;
 }
 
 export async function getPoll(id: string): Promise<Poll | null> {
-  const data = await redis.get<Poll>(`poll:${id}`);
+  const data = await getRedis().get<Poll>(`poll:${id}`);
   if (!data) return null;
   return data;
 }
@@ -73,11 +79,11 @@ export async function addParticipant(pollId: string, participant: Participant): 
   }
 
   // Calculate remaining TTL
-  const ttl = await redis.ttl(`poll:${pollId}`);
+  const ttl = await getRedis().ttl(`poll:${pollId}`);
   if (ttl > 0) {
-    await redis.setex(`poll:${pollId}`, ttl, poll);
+    await getRedis().setex(`poll:${pollId}`, ttl, poll);
   } else {
-    await redis.setex(`poll:${pollId}`, 14 * 24 * 60 * 60, poll);
+    await getRedis().setex(`poll:${pollId}`, 14 * 24 * 60 * 60, poll);
   }
 
   return poll;
