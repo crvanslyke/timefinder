@@ -25,6 +25,7 @@ interface Poll {
   id: string;
   title: string;
   description?: string;
+  duration: 30 | 60;
   timeSlots: TimeSlot[];
   participants: Participant[];
   createdAt: string;
