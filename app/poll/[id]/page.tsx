@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
@@ -46,11 +46,7 @@ export default function PollPage() {
 
   const userTimezone = dayjs.tz.guess();
 
-  useEffect(() => {
-    fetchPoll();
-  }, [pollId]);
-
-  const fetchPoll = async () => {
+  const fetchPoll = useCallback(async () => {
     try {
       const response = await fetch(`/api/poll/${pollId}`);
       if (!response.ok) {
@@ -63,7 +59,11 @@ export default function PollPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [pollId]);
+
+  useEffect(() => {
+    fetchPoll();
+  }, [fetchPoll]);
 
   const toggleSlot = (slotId: string) => {
     const newSelected = new Set(selectedSlots);

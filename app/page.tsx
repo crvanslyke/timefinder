@@ -17,7 +17,7 @@ export default function Home() {
           </h2>
           <p className="text-gray-600 dark:text-gray-300 mb-6">
             Create a poll with multiple time slots and share it with participants.
-            Everyone selects their availability and you'll see the best times instantly.
+            Everyone selects their availability and you&apos;ll see the best times instantly.
           </p>
 
           <Link
