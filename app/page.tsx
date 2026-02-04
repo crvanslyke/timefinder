@@ -20,12 +20,20 @@ export default function Home() {
             Everyone selects their availability and you&apos;ll see the best times instantly.
           </p>
 
-          <Link
-            href="/create"
-            className="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-8 py-3 rounded-lg transition-colors"
-          >
-            Create a Poll
-          </Link>
+          <div className="flex gap-4 justify-center">
+            <Link
+              href="/create"
+              className="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-8 py-3 rounded-lg transition-colors"
+            >
+              Create a Poll
+            </Link>
+            <Link
+              href="/my-polls"
+              className="inline-block bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-semibold px-8 py-3 rounded-lg transition-colors"
+            >
+              My Polls
+            </Link>
+          </div>
         </div>
 
         <div className="grid md:grid-cols-3 gap-4 text-left">

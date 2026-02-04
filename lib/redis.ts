@@ -48,15 +48,15 @@ export async function createPoll(poll: Omit<Poll, "id" | "createdAt" | "expiresA
   };
 
   // Store with TTL of 14 days (in seconds)
-  await redis.setex(`poll:${id}`, 14 * 24 * 60 * 60, JSON.stringify(newPoll));
+  await redis.setex(`poll:${id}`, 14 * 24 * 60 * 60, newPoll);
 
   return newPoll;
 }
 
 export async function getPoll(id: string): Promise<Poll | null> {
-  const data = await redis.get<string>(`poll:${id}`);
+  const data = await redis.get<Poll>(`poll:${id}`);
   if (!data) return null;
-  return JSON.parse(data);
+  return data;
 }
 
 export async function addParticipant(pollId: string, participant: Participant): Promise<Poll | null> {
@@ -74,9 +74,9 @@ export async function addParticipant(pollId: string, participant: Participant): 
   // Calculate remaining TTL
   const ttl = await redis.ttl(`poll:${pollId}`);
   if (ttl > 0) {
-    await redis.setex(`poll:${pollId}`, ttl, JSON.stringify(poll));
+    await redis.setex(`poll:${pollId}`, ttl, poll);
   } else {
-    await redis.setex(`poll:${pollId}`, 14 * 24 * 60 * 60, JSON.stringify(poll));
+    await redis.setex(`poll:${pollId}`, 14 * 24 * 60 * 60, poll);
   }
 
   return poll;

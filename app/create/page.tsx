@@ -79,6 +79,21 @@ export default function CreatePoll() {
       }
 
       const data = await response.json();
+
+      // Save to localStorage for "My Polls"
+      try {
+        const saved = localStorage.getItem("myPolls");
+        const polls = saved ? JSON.parse(saved) : [];
+        polls.push({
+          id: data.id,
+          title: data.title,
+          createdAt: data.createdAt,
+        });
+        localStorage.setItem("myPolls", JSON.stringify(polls));
+      } catch (storageError) {
+        console.error("Failed to save to localStorage:", storageError);
+      }
+
       router.push(`/poll/${data.id}`);
     } catch (err) {
       setError("Failed to create poll. Please try again.");
