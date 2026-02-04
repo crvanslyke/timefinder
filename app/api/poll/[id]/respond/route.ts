@@ -3,10 +3,10 @@ import { addParticipant } from "@/lib/redis";
 
 export async function POST(
   request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await context.params;
+    const { id } = params;
     const body = await request.json();
     const { name, selectedSlots } = body;
 
