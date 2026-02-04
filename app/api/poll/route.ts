@@ -4,7 +4,7 @@ import { createPoll } from "@/lib/redis";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { title, description, timeSlots } = body;
+    const { title, description, duration, timeSlots } = body;
 
     if (!title || !timeSlots || !Array.isArray(timeSlots) || timeSlots.length === 0) {
       return NextResponse.json(
@@ -16,6 +16,7 @@ export async function POST(request: NextRequest) {
     const poll = await createPoll({
       title,
       description,
+      duration: duration || 60, // Default to 60 minutes if not provided
       timeSlots,
     });
 
